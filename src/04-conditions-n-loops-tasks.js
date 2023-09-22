@@ -410,8 +410,19 @@ function isBracketsBalanced(str_) {
  *    365, 4  => '11231'
  *    365, 10 => '365'
  */
-function toNaryString(/* num, n */) {
-  throw new Error('Not implemented');
+function toNaryString(num, baseTarget) {
+  // return num.toString(n);
+  function n2s(n_, base) {
+    let n = n_;
+    let str = '';
+    do {
+      const r = n % base;
+      n = (n - r) / base;
+      str = `${r}${str}`;
+    } while (n > 0);
+    return str;
+  }
+  return n2s(num, baseTarget);
 }
 
 
@@ -427,8 +438,28 @@ function toNaryString(/* num, n */) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/verbalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(pathes) {
+  const minLen = pathes.reduce((acc, path) => (
+    (acc === undefined || path.length < acc) ? path.length : acc
+  ), undefined);
+  let i;
+  for (i = 0; i < minLen; i += 1) {
+    const ch = pathes[0][i];
+
+    let found = true;
+    for (let pathIndex = 1; pathIndex < pathes.length; pathIndex += 1) {
+      if (ch !== pathes[pathIndex][i]) {
+        found = false;
+        break;
+      }
+    }
+    if (!found) {
+      break;
+    }
+  }
+  const str = pathes[0].slice(0, i);
+  const lastIndex = str.lastIndexOf('/');
+  return str.slice(0, lastIndex + 1);
 }
 
 
@@ -450,14 +481,22 @@ function getCommonDirectoryPath(/* pathes */) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(a, b) {
+  const c = Array(a.length).fill(0).map(() => (Array(b[0].length).fill(0)));
+  for (let i = 0; i < a.length; i += 1) {
+    for (let j = 0; j < b[i].length; j += 1) {
+      for (let k = 0; k < b.length; k += 1) {
+        c[i][j] += a[i][k] * b[k][j];
+      }
+    }
+  }
+  return c;
 }
 
 
 /**
  * Returns the evaluation of the specified tic-tac-toe position.
- * See the details: https://en.wikipedia.org/wiki/Tic-tac-toe
+ * See the detail0s: https://en.wikipedia.org/wiki/Tic-tac-toe
  *
  * Position is provides as 3x3 array with the following values: 'X','0', undefined
  * Function should return who is winner in the current position according to the game rules.
@@ -485,8 +524,56 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  let winner;
+  for (let row = 0; row < 3; row += 1) {
+    [winner] = position[row];
+    for (let col = 1; col < 3; col += 1) {
+      if (winner !== position[row][col]) {
+        winner = undefined;
+        break;
+      }
+    }
+    if (winner !== undefined) {
+      return winner;
+    }
+  }
+  for (let col = 0; col < 3; col += 1) {
+    winner = position[0][col];
+    for (let row = 1; row < 3; row += 1) {
+      if (winner !== position[row][col]) {
+        winner = undefined;
+        break;
+      }
+    }
+    if (winner !== undefined) {
+      return winner;
+    }
+  }
+  [[winner]] = position;
+  for (let row = 1; row < 3; row += 1) {
+    const col = row;
+    if (winner !== position[row][col]) {
+      winner = undefined;
+      break;
+    }
+  }
+  if (winner !== undefined) {
+    return winner;
+  }
+
+  winner = position[0][3 - 1];
+  for (let row = 1; row < 3; row += 1) {
+    const col = 3 - row - 1;
+    if (winner !== position[row][col]) {
+      winner = undefined;
+      break;
+    }
+  }
+  if (winner !== undefined) {
+    return winner;
+  }
+  return undefined;
 }
 
 
